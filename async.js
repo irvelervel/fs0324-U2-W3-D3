@@ -39,4 +39,42 @@ const pageStartWithCallback = function () {
   })
 }
 
-pageStartWithCallback()
+// pageStartWithCallback()
+
+// 2) risolviamo ora il problema con una Promise
+
+const countUntilThreeWithPromise = function () {
+  return new Promise((resolve, reject) => {
+    console.log('conto fino a 3...')
+    // se invece dovessi anche gestire il caso in cui l'operazione asincrona NON finisca bene, dovrei in quel
+    // caso invocare reject()
+    reject('si è rotto il timeout')
+    setTimeout(() => {
+      // una volta che arrivo alla corretta conclusione della Promise, va invocato resolve()
+      resolve()
+      // così la Promise viene risolta
+    }, 3000)
+  })
+}
+
+// stiamo sempre risolvendo lo stesso problema: trovare un modo per CONCATENARE l'esecuzione di più blocchi di codice,
+// tenendo in considerazione che se uno dei blocchi è un'operazione asincrona, in JS non è sufficiente inserire il blocco
+// successiva nella riga dopo!
+// con le Promise è possibile concatenare il codice successivo SENZA doverlo passare come parametro all'operazione async
+// (come nelle callbacks), ma invece "aggiungendolo" nei blocchi .then() e .catch(), rispettivamente gestendo i due possibili
+// esiti della operazione asincrona (positivo e negativo).
+
+const pageStartWithPromise = function () {
+  countUntilThreeWithPromise()
+    .then(() => {
+      // finirò qui dentro SE la Promise si è risolta!
+      // e quindi qui dentro inserisco le cose da fare dopo
+      console.log('FINITO!')
+    })
+    .catch((err) => {
+      // qui dentro invece finiremmo se la Promise dovesse fallire
+      console.log(err)
+    })
+}
+
+pageStartWithPromise()
